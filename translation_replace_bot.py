@@ -103,20 +103,30 @@ class TranslationReplaceBot:
             # Tìm kiếm chính xác cụm từ trong dấu nháy đơn hoặc nháy kép
             pattern = r'["\']' + re.escape(search_text) + r'["\']'
             
-            if re.search(pattern, content):
-                # Nếu replace_text có dấu nháy đơn, luôn dùng nháy kép để bao bọc
+            # Pattern cho text trong thẻ XML
+            xml_pattern = r'>(' + re.escape(search_text) + r')<'
+            
+            # Pattern cho text trong thẻ bold 
+            bold_pattern = r'<bold>\s*' + re.escape(search_text) + r'\s*</bold>'
+            
+            if re.search(pattern, content) or re.search(xml_pattern, content) or re.search(bold_pattern, content):
+                # Xử lý text trong dấu nháy (giữ nguyên logic cũ)
                 if "'" in replace_text:
-                    # Thay thế cả hai trường hợp nháy đơn và nháy kép thành nháy kép
                     new_content = re.sub(r'"' + re.escape(search_text) + r'"', 
                                       f'"{replace_text}"', content)
                     new_content = re.sub(r"'" + re.escape(search_text) + r"'",
                                       f'"{replace_text}"', new_content)
                 else:
-                    # Giữ nguyên loại dấu nháy
                     new_content = re.sub(r'"' + re.escape(search_text) + r'"', 
                                       f'"{replace_text}"', content)
                     new_content = re.sub(r"'" + re.escape(search_text) + r"'",
                                       f"'{replace_text}'", new_content)
+                
+                # Xử lý text trong thẻ XML
+                new_content = re.sub(xml_pattern, f'>{replace_text}<', new_content)
+                
+                # Xử lý text trong thẻ bold
+                new_content = re.sub(bold_pattern, f'<bold>{replace_text}</bold>', new_content)
                 
                 # Ghi file mới
                 with open(file_path, 'w', encoding='utf-8') as f:
