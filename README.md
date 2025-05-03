@@ -54,7 +54,7 @@ _Vietnamese_
 - Xử lý một số từ ngoại lệ
 - Hiển thị tiến trình
 - Dễ sử dụng chỉ với một lệnh duy nhất
-- 
+
 # Contact for request another ODOO tips&trick:
 [@namnguyenriptcns](https://t.me/namnguyenriptcns)
 
